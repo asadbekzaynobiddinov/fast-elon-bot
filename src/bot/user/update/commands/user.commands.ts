@@ -1,10 +1,33 @@
+import { InjectRepository } from '@nestjs/typeorm';
 import { Update, Command, Ctx } from 'nestjs-telegraf';
 import { ContextType } from 'src/common/types/indeex';
+import { UserRepository, User } from 'src/core';
+import { Markup } from 'telegraf';
 
 @Update()
 export class UserCommands {
+  constructor(
+    @InjectRepository(User) private readonly userRepo: UserRepository,
+  ) {}
   @Command('start')
   async start(@Ctx() ctx: ContextType) {
-    await ctx.reply('Welcome to the bot! Use /help to see available commands.');
+    const user = await this.userRepo.findOne({
+      where: { telegram_id: ctx.from?.id.toString() },
+    });
+    if (!user) {
+      ctx.session.lastMessage = await ctx.reply(
+        'Kerakli tilni tanlang !\n\nВыберите нужный язык !\n\nSelect the required language !\n\n',
+        {
+          reply_markup: {
+            inline_keyboard: [
+              [Markup.button.callback("🇺🇿 O'zbekcha", 'uzbek')],
+              [Markup.button.callback('🇷🇺 Русский', 'russian')],
+              [Markup.button.callback('🇬🇧 English', 'english')],
+            ],
+          },
+        },
+      );
+      return;
+    }
   }
 }
