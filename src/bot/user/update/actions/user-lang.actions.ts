@@ -1,5 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Update, Action, Ctx } from 'nestjs-telegraf';
+import { userMainMessage, usersMenu } from 'src/common/constants';
 import { UserLang } from 'src/common/enum';
 import { ContextType } from 'src/common/types/indeex';
 import { UserRepository, User } from 'src/core';
@@ -19,7 +20,9 @@ export class UserLangActions {
       last_name: ctx.from?.last_name || 'unknown',
     });
     await this.userRepo.save(newUser);
-    await ctx.editMessageText('Til O`zbekcha qilib o`zgartirildi !');
+    await ctx.editMessageText(userMainMessage.uz, {
+      reply_markup: usersMenu.uz,
+    });
   }
 
   @Action('russian')
@@ -32,7 +35,9 @@ export class UserLangActions {
       last_name: ctx.from?.last_name || 'unknown',
     });
     await this.userRepo.save(newUser);
-    await ctx.editMessageText('Язык был изменен на русский!');
+    await ctx.editMessageText(userMainMessage.ru, {
+      reply_markup: usersMenu.ru,
+    });
   }
 
   @Action('english')
@@ -45,6 +50,8 @@ export class UserLangActions {
       last_name: ctx.from?.last_name || 'unknown',
     });
     await this.userRepo.save(newUser);
-    await ctx.editMessageText('Language has been changed to English!');
+    await ctx.editMessageText(userMainMessage.en, {
+      reply_markup: usersMenu.en,
+    });
   }
 }

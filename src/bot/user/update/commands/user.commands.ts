@@ -1,5 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Update, Command, Ctx } from 'nestjs-telegraf';
+import { userMainMessage, usersMenu } from 'src/common/constants';
 import { ContextType } from 'src/common/types/indeex';
 import { UserRepository, User } from 'src/core';
 import { Markup } from 'telegraf';
@@ -29,5 +30,8 @@ export class UserCommands {
       );
       return;
     }
+    ctx.session.lastMessage = await ctx.reply(userMainMessage[user.lang], {
+      reply_markup: usersMenu[user.lang],
+    });
   }
 }
