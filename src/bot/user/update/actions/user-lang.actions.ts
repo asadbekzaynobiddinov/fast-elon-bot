@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Update, Action, Ctx } from 'nestjs-telegraf';
 import { userMainMessage, usersMenu } from 'src/common/constants';
 import { UserLang } from 'src/common/enum';
-import { ContextType } from 'src/common/types/indeex';
+import { ContextType } from 'src/common/types';
 import { UserRepository, User } from 'src/core';
 
 @Update()

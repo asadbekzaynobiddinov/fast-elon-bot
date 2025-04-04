@@ -3,3 +3,8 @@ export enum UserLang {
   RU = 'ru',
   EN = 'en',
 }
+
+export enum HomeType {
+  REAL_ESTATE = 'realEstate',
+  RENT = 'rent',
+}

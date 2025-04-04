@@ -63,18 +63,21 @@ export const homeMenu: Record<string, InlineKeyboardMarkup> = {
     inline_keyboard: [
       [Markup.button.callback("🏠 Ko'chmas mulk", 'realEstate')],
       [Markup.button.callback('🏢 Ijara', 'rent')],
+      [Markup.button.callback('◀️ Orqaga', 'backFromHomeMenu')],
     ],
   },
   ru: {
     inline_keyboard: [
       [Markup.button.callback('🏠 Недвижимость', 'realEstate')],
       [Markup.button.callback('🏢 Аренда', 'rent')],
+      [Markup.button.callback('◀️ Назад', 'backFromHomeMenu')],
     ],
   },
   en: {
     inline_keyboard: [
       [Markup.button.callback('🏠 Real Estate', 'realEstate')],
       [Markup.button.callback('🏢 Rent', 'rent')],
+      [Markup.button.callback('◀️ Back', 'backFromHomeMenu')],
     ],
   },
 };

@@ -6,5 +6,7 @@ export type ContextType = Context &
     session: {
       lang: string;
       lastMessage: any;
+      home_id: string;
+      homePictures: string[];
     };
   };

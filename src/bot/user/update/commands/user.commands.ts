@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Update, Command, Ctx } from 'nestjs-telegraf';
 import { userMainMessage, usersMenu } from 'src/common/constants';
-import { ContextType } from 'src/common/types/indeex';
+import { ContextType } from 'src/common/types';
 import { UserRepository, User } from 'src/core';
 import { Markup } from 'telegraf';
 
