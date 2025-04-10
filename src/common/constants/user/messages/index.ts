@@ -5,9 +5,9 @@ export const userMainMessage = {
 };
 
 export const askHomePicturesMessage = {
-  uz: 'Iltimos, uy rasmlarini yuboring.\nEng kamida 3 ta rasm yuborishingiz kerak.',
-  ru: 'Пожалуйста, отправьте фотографии дома.\nВы должны отправить не менее 3 фотографий.',
-  en: 'Please send the house pictures.\nYou must send at least 3 pictures.',
+  uz: "Iltimos, uy rasmlarini yuboring.\nEng kamida 3 ta rasm yuborishingiz kerak.\nKiritib bo'lganingizdan so'ng <b>/done</b> buyug'ni bering!",
+  ru: 'Пожалуйста, отправьте фотографии дома.\nВы должны отправить не менее 3 фотографий.\nПосле завершения введите команду <b>/done!</b>',
+  en: 'Please send the house pictures.\nYou must send at least 3 pictures.\nOnce done, use the <b>/done</b> command!',
 };
 
 export const addressMessage = {
@@ -62,4 +62,10 @@ export const doneMessage = {
   uz: `E'loninggiz adminlar tomonidan ko'rib chiqilib tez orada kanalga joylanadi. ✅`,
   ru: 'Ваше объявление будет рассмотрено администраторами и вскоре размещено на канале. ✅',
   en: 'Your advertisement will be reviewed by the admins and posted on the channel soon. ✅',
+};
+
+export const minPicLeghth = {
+  uz: "Rasmlar soni kamida 3 ta bo'lishi kerak!",
+  ru: 'Количество фотографий должно быть не менее 3!',
+  en: 'The number of photos must be at least 3!',
 };

@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Scene, SceneEnter, Ctx, On } from 'nestjs-telegraf';
+import { Scene, SceneEnter, Ctx, On, Command } from 'nestjs-telegraf';
 import {
   additionalInfo,
   addressMessage,
@@ -8,6 +8,7 @@ import {
   doneMessage,
   floorMessage,
   floorsMessage,
+  minPicLeghth,
   priceMessage,
   roomsMessage,
   squareMessage,
@@ -17,6 +18,8 @@ import {
 import { ContextType } from 'src/common/types';
 import { Home, HomeRepository } from 'src/core';
 import { config } from 'src/config';
+import { Markup } from 'telegraf';
+import { HomeType } from 'src/common/enum';
 
 @Scene('homeScene')
 export class HomeScene {
@@ -27,55 +30,55 @@ export class HomeScene {
   async onSceneEnter(@Ctx() ctx: ContextType) {
     await ctx.editMessageText(
       askHomePicturesMessage[ctx.session.lang] as string,
+      {
+        parse_mode: 'HTML',
+      },
     );
   }
 
   @On('photo')
   async onPhoto(@Ctx() ctx: ContextType) {
     try {
-      // Rasm ma'lumotlarini olish
       const photo = (
         ctx.update as { message: { photo: { file_id: string }[] } }
       ).message.photo;
 
-      // Eng yuqori sifatli rasmni olish (oxirgi element)
       const fileId: string = photo[photo.length - 1].file_id;
 
-      // Uy e'lonini bazadan topish
+      console.log('rasm qabul qilindi', fileId);
+
       const homeAd = await this.homeRepo.findOne({
         where: { id: ctx.session.home_id },
       });
 
-      // Agar holat "rasmlarKutilmoqda" bo'lmasa, to'xtatish
       if (homeAd?.last_state != 'awaitPictures') {
         return;
       }
 
-      // Transaction (tranzaksiya) yaratish - ma'lumotlar bazasida xatolikni oldini olish
-      await this.homeRepo.manager.transaction(
-        async (transactionalEntityManager) => {
-          // Yangi uy e'lonini yuklab olish (boshqa o'zgarishlarni yo'qotmaslik uchun)
-          const freshHomeAd = await transactionalEntityManager.findOne(Home, {
-            where: { id: ctx.session.home_id },
-          });
-
-          if (freshHomeAd) {
-            // Rasm ID sini qo'shish
-            freshHomeAd.pictures.push(fileId);
-            await transactionalEntityManager.save(freshHomeAd);
-
-            // Agar 3 yoki undan ko'p rasm bo'lsa, holatni o'zgartirish
-            if (freshHomeAd.pictures.length >= 3) {
-              freshHomeAd.last_state = 'awaitAddress';
-              await transactionalEntityManager.save(freshHomeAd);
-              await ctx.reply(addressMessage[ctx.session.lang] as string);
-            }
-          }
-        },
-      );
+      homeAd.pictures.push(fileId);
+      await this.homeRepo.save(homeAd);
     } catch (error) {
       console.error('Rasm qabul qilishda xato:', error);
     }
+  }
+
+  @Command('done')
+  async done(@Ctx() ctx: ContextType) {
+    const homeAdd = await this.homeRepo.findOne({
+      where: { id: ctx.session.home_id },
+    });
+
+    if (!homeAdd) {
+      return;
+    }
+
+    if ((homeAdd?.pictures ?? []).length < 3) {
+      await ctx.reply(minPicLeghth[ctx.session.lang] as string);
+      return;
+    }
+    homeAdd.last_state = 'awaitAddress';
+    await this.homeRepo.save(homeAdd);
+    await ctx.reply(addressMessage[ctx.session.lang] as string);
   }
 
   @On('text')
@@ -170,53 +173,43 @@ export class HomeScene {
           homeAdd.pictures.map((fileId, index) => ({
             type: 'photo',
             media: fileId,
+            parse_mode: 'HTML',
             caption:
               index === 0
-                ? '🆔 Id: ' +
-                  homeAdd.id +
-                  '\n\n' +
-                  '📍 Manzil: ' +
-                  homeAdd.location +
-                  '\n' +
-                  '🏢 Qavatlar: ' +
-                  homeAdd.floors_of_building +
-                  '\n' +
-                  '🏬 Qavat: ' +
-                  homeAdd.floor_number +
-                  '\n' +
-                  '🛏️ Xonalar: ' +
-                  homeAdd.rooms +
-                  '\n' +
-                  '📐 Maydon: ' +
-                  homeAdd.square +
-                  '\n' +
-                  '💰 Narx: ' +
-                  homeAdd.price +
-                  '\n' +
-                  '📞 Aloqa raqami: ' +
-                  homeAdd.number_for_contact +
-                  '\n' +
-                  "ℹ️ Qo'shimcha ma'lumot: " +
-                  homeAdd.additional_information
-                : undefined,
-            reply_markup:
-              index === 0
-                ? {
-                    inline_keyboard: [
-                      [
-                        {
-                          text: '✅ Accept',
-                          callback_data: `accept_${homeAdd.id}`,
-                        },
-                        {
-                          text: '❌ Reject',
-                          callback_data: `reject_${homeAdd.id}`,
-                        },
-                      ],
-                    ],
-                  }
+                ? `🆔 <b>Id:</b> ${homeAdd.id}\n\n` +
+                  (homeAdd.type == HomeType.REAL_ESTATE
+                    ? '<b>Uy sotiladi.</b>\n\n'
+                    : '<b>Uy ijaraga beriladi.</b>\n\n') +
+                  `📍 <b>Manzili:</b> ${homeAdd.location}\n` +
+                  `🏢 <b>Qavatlar soni:</b> ${homeAdd.floors_of_building}\n` +
+                  `🏬 <b>Uy joylashgan qavati:</b> ${homeAdd.floor_number}\n` +
+                  `🛏️ <b>Xonalar soni:</b> ${homeAdd.rooms}\n` +
+                  `📐 <b>Uy maydoni:</b> ${homeAdd.square}\n` +
+                  `💰 <b>Narx:</b> ${homeAdd.price}\n` +
+                  `📞 <b>Bog'lanish uchun:</b> @Fastelonuz\n` +
+                  `ℹ️ <b>Qo'shimcha ma'lumotlar:</b> ${homeAdd.additional_information}`
                 : undefined,
           })),
+        );
+        await ctx.telegram.sendMessage(
+          config.HOME_ADMIN_CHANEL,
+          "Yuqoridagi rasmda ko'rsatilgan ma'lumotlar bilan yangi e'lon berildi. 👆",
+          {
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  Markup.button.callback(
+                    '✅ Tasdiqlash',
+                    `confirmHome=${homeAdd.id}`,
+                  ),
+                  Markup.button.callback(
+                    '❌ Rad etish',
+                    `rejectHome=${homeAdd.id}`,
+                  ),
+                ],
+              ],
+            },
+          },
         );
         await ctx.scene.leave();
         return;

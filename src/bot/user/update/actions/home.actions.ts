@@ -32,6 +32,18 @@ export class HomeActions {
     await ctx.scene.enter('homeScene');
   }
 
+  @Action('rent')
+  async rent(@Ctx() ctx: ContextType) {
+    const newHome = this.homeRepo.create({
+      type: HomeType.RENT,
+      last_state: 'awaitPictures',
+      pictures: [],
+    });
+    await this.homeRepo.save(newHome);
+    ctx.session.home_id = newHome.id;
+    await ctx.scene.enter('homeScene');
+  }
+
   @Action('backFromHomeMenu')
   async backFromHomeMenu(@Ctx() ctx: ContextType) {
     await ctx.editMessageText(userMainMessage[ctx.session.lang] as string, {
