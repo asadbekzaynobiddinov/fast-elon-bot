@@ -39,4 +39,7 @@ export class Home extends BaseModel {
 
   @Column({ type: 'varchar', nullable: true })
   last_state: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  user_id: string;
 }

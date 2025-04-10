@@ -26,6 +26,7 @@ export class HomeActions {
       type: HomeType.REAL_ESTATE,
       last_state: 'awaitPictures',
       pictures: [],
+      user_id: `${ctx.from?.id}`,
     });
     await this.homeRepo.save(newHome);
     ctx.session.home_id = newHome.id;
@@ -38,6 +39,7 @@ export class HomeActions {
       type: HomeType.RENT,
       last_state: 'awaitPictures',
       pictures: [],
+      user_id: `${ctx.from?.id}`,
     });
     await this.homeRepo.save(newHome);
     ctx.session.home_id = newHome.id;

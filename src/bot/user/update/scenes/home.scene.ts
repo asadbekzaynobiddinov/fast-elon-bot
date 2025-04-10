@@ -160,7 +160,32 @@ export class HomeScene {
         homeAdd.additional_information = information;
         homeAdd.last_state = 'done';
         await this.homeRepo.save(homeAdd);
+
+        await ctx.sendMediaGroup(
+          homeAdd.pictures.map((fileId, index) => ({
+            type: 'photo',
+            media: fileId,
+            parse_mode: 'HTML',
+            caption:
+              index === 0
+                ? `🆔 <b>Id:</b> ${homeAdd.id}\n\n` +
+                  (homeAdd.type == HomeType.REAL_ESTATE
+                    ? '<b>Uy sotiladi.</b>\n\n'
+                    : '<b>Uy ijaraga beriladi.</b>\n\n') +
+                  `📍 <b>Manzili:</b> ${homeAdd.location}\n` +
+                  `🏢 <b>Qavatlar soni:</b> ${homeAdd.floors_of_building}\n` +
+                  `🏬 <b>Uy joylashgan qavati:</b> ${homeAdd.floor_number}\n` +
+                  `🛏️ <b>Xonalar soni:</b> ${homeAdd.rooms}\n` +
+                  `📐 <b>Uy maydoni:</b> ${homeAdd.square}\n` +
+                  `💰 <b>Narx:</b> ${homeAdd.price}\n` +
+                  `📞 <b>Bog'lanish uchun:</b> ${homeAdd.number_for_contact}\n` +
+                  `ℹ️ <b>Qo'shimcha ma'lumotlar:</b> ${homeAdd.additional_information}`
+                : undefined,
+          })),
+        );
+
         await ctx.reply(doneMessage[ctx.session.lang] as string);
+
         ctx.session.lastMessage = await ctx.reply(
           userMainMessage[ctx.session.lang] as string,
           {
@@ -200,11 +225,11 @@ export class HomeScene {
                 [
                   Markup.button.callback(
                     '✅ Tasdiqlash',
-                    `confirmHome=${homeAdd.id}`,
+                    `confirmHomeAsAdmin=${homeAdd.id}`,
                   ),
                   Markup.button.callback(
                     '❌ Rad etish',
-                    `rejectHome=${homeAdd.id}`,
+                    `rejectHomeAsAdmin=${homeAdd.id}`,
                   ),
                 ],
               ],
