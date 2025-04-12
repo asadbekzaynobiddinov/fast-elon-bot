@@ -7,6 +7,6 @@ export type ContextType = Context &
       lang: string;
       lastMessage: any;
       home_id: string;
-      homePictures: string[];
+      phone_id: string;
     };
   };

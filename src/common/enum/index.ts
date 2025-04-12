@@ -8,3 +8,8 @@ export enum HomeType {
   REAL_ESTATE = 'realEstate',
   RENT = 'rent',
 }
+
+export enum PhoneType {
+  IPHONE = 'iphone',
+  ANDROID = 'android',
+}

@@ -81,3 +81,42 @@ export const homeMenu: Record<string, InlineKeyboardMarkup> = {
     ],
   },
 };
+
+export const phoneMenu: Record<string, InlineKeyboardMarkup> = {
+  uz: {
+    inline_keyboard: [
+      [
+        Markup.button.callback('📱 Iphone', 'iphone'),
+        Markup.button.callback('🤖 Android', 'android'),
+      ],
+    ],
+  },
+  ru: {
+    inline_keyboard: [
+      [
+        Markup.button.callback('📱 Айфон', 'iphone'),
+        Markup.button.callback('🤖 Андроид', 'android'),
+      ],
+    ],
+  },
+  en: {
+    inline_keyboard: [
+      [
+        Markup.button.callback('📱 iPhone', 'iphone'),
+        Markup.button.callback('🤖 Android', 'android'),
+      ],
+    ],
+  },
+};
+
+export const backFromPhomeMenu = {
+  uz: '◀️ Orqaga',
+  ru: '◀️ Назад',
+  en: '◀️ Back',
+};
+
+export const additionalKeyForPhone = {
+  uz: '🛒 Sotib olish',
+  ru: '🛒 Купить',
+  en: '🛒 Buy',
+};
