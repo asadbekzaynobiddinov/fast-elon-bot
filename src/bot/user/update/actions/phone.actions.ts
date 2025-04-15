@@ -11,6 +11,7 @@ import {
 import { PhoneType } from 'src/common/enum';
 import { LangGuard } from 'src/common/guard/lang-guard';
 import { ContextType } from 'src/common/types';
+import { config } from 'src/config';
 import { Phone, PhoneRepository } from 'src/core';
 import { Markup } from 'telegraf';
 
@@ -31,7 +32,7 @@ export class UserPhoneActions {
           [
             Markup.button.url(
               additionalKeyForPhone[ctx.session.lang] as string,
-              'https://t.me/home_main_chanel',
+              config.PHONE_MAIN_URL,
             ),
             Markup.button.callback(
               backFromPhomeMenu[ctx.session.lang] as string,
@@ -47,6 +48,19 @@ export class UserPhoneActions {
   async iphone(@Ctx() ctx: ContextType) {
     const newPhone = this.phoneRepo.create({
       type: PhoneType.IPHONE,
+      last_state: 'awaitPictures',
+      pictures: [],
+      user_id: `${ctx.from?.id}`,
+    });
+    await this.phoneRepo.save(newPhone);
+    ctx.session.phone_id = newPhone.id;
+    await ctx.scene.enter('phoneScene');
+  }
+
+  @Action('android')
+  async android(@Ctx() ctx: ContextType) {
+    const newPhone = this.phoneRepo.create({
+      type: PhoneType.ANDROID,
       last_state: 'awaitPictures',
       pictures: [],
       user_id: `${ctx.from?.id}`,

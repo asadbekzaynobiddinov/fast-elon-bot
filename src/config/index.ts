@@ -8,6 +8,9 @@ export type ConfigType = {
   TOKEN: string;
   HOME_ADMIN_CHANEL: string;
   HOME_MAIN_CHANEL: string;
+  PHONE_ADMIN_CHANEL: string;
+  PHONE_MAIN_CHANEL: string;
+  PHONE_MAIN_URL: string;
 };
 
 export const config: ConfigType = {
@@ -16,4 +19,7 @@ export const config: ConfigType = {
   TOKEN: process.env.TOKEN as string,
   HOME_ADMIN_CHANEL: process.env.HOME_ADMIN_CHANEL as string,
   HOME_MAIN_CHANEL: process.env.HOME_MAIN_CHANEL as string,
+  PHONE_ADMIN_CHANEL: process.env.PHONE_ADMIN_CHANEL as string,
+  PHONE_MAIN_CHANEL: process.env.PHONE_MAIN_CHANEL as string,
+  PHONE_MAIN_URL: process.env.PHONE_MAIN_URL as string,
 };

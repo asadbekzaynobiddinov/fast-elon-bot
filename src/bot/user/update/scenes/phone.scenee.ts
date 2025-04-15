@@ -1,7 +1,9 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Scene, SceneEnter, On, Ctx, Command } from 'nestjs-telegraf';
+import { Markup } from 'telegraf';
 import {
   contactInfoMessage,
+  doneMessage,
   minPicLeghth,
   phoneBatteryConditionMessage,
   phoneBoxAndDocumentMessage,
@@ -12,8 +14,11 @@ import {
   phoneNameMessage,
   phonePriceMessage,
   phoneRegionMessage,
+  userMainMessage,
+  usersMenu,
 } from 'src/common/constants';
 import { ContextType } from 'src/common/types';
+import { config } from 'src/config';
 import { Phone, PhoneRepository } from 'src/core';
 
 @Scene('phoneScene')
@@ -167,10 +172,75 @@ export class PhoneScene {
         phoneAd.price = price;
         phoneAd.last_state = 'done';
         await this.phoneRepo.save(phoneAd);
-        await ctx.reply(
-          `Sizning e'loningiz tayyor!\n\n${phoneAd.name}\n${phoneAd.condition}\n${phoneAd.memory}\n${phoneAd.color}\n${phoneAd.box_and_documents}\n${phoneAd.battery_condition}\n${phoneAd.region}\n${phoneAd.contact_number}\n${phoneAd.price}`,
-          {
+
+        await ctx.sendMediaGroup(
+          phoneAd.pictures.map((fileId, index) => ({
+            type: 'photo',
+            media: fileId,
             parse_mode: 'HTML',
+            caption:
+              index === 0
+                ? `🆔 <b>Id:</b> ${phoneAd.id}\n\n` +
+                  `<b>Nomi: ${phoneAd.name}</b>\n\n` +
+                  `📱 <b>Holati:</b> ${phoneAd.condition}\n` +
+                  `💾 <b>Xotira hajmi:</b> ${phoneAd.memory}\n` +
+                  `🎨 <b>Rangi:</b> ${phoneAd.color}\n` +
+                  `📦 <b>Quti va hujjatlari:</b> ${phoneAd.box_and_documents}\n` +
+                  `🔋 <b>Batareyasi:</b> ${phoneAd.battery_condition}\n` +
+                  `🌍 <b>Hududi:</b> ${phoneAd.region}\n` +
+                  `📞 <b>Bog'lanish uchun raqam:</b> ${phoneAd.contact_number}\n` +
+                  `💵 <b>Narxi:</b> ${phoneAd.price}`
+                : undefined,
+          })),
+        );
+
+        await ctx.reply(doneMessage[ctx.session.lang] as string);
+        ctx.session.lastMessage = await ctx.reply(
+          userMainMessage[ctx.session.lang] as string,
+          {
+            reply_markup: usersMenu[ctx.session.lang],
+          },
+        );
+
+        await ctx.telegram.sendMediaGroup(
+          config.PHONE_ADMIN_CHANEL,
+          phoneAd.pictures.map((fileId, index) => ({
+            type: 'photo',
+            media: fileId,
+            parse_mode: 'HTML',
+            caption:
+              index === 0
+                ? `🆔 <b>Id:</b> ${phoneAd.id}\n\n` +
+                  `<b>Nomi: ${phoneAd.name}</b>\n\n` +
+                  `📱 <b>Holati:</b> ${phoneAd.condition}\n` +
+                  `💾 <b>Xotira hajmi:</b> ${phoneAd.memory}\n` +
+                  `🎨 <b>Rangi:</b> ${phoneAd.color}\n` +
+                  `📦 <b>Quti va hujjatlari:</b> ${phoneAd.box_and_documents}\n` +
+                  `🔋 <b>Batareyasi:</b> ${phoneAd.battery_condition}\n` +
+                  `🌍 <b>Hududi:</b> ${phoneAd.region}\n` +
+                  `📞 <b>Bog'lanish uchun raqam:</b> ${phoneAd.contact_number}\n` +
+                  `💵 <b>Narxi:</b> ${phoneAd.price}`
+                : undefined,
+          })),
+        );
+        await ctx.telegram.sendMessage(
+          config.HOME_ADMIN_CHANEL,
+          "Yuqoridagi rasmda ko'rsatilgan ma'lumotlar bilan yangi e'lon berildi. 👆",
+          {
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  Markup.button.callback(
+                    '✅ Tasdiqlash',
+                    `confirmPhoneAsAdmin=${phoneAd.id}`,
+                  ),
+                  Markup.button.callback(
+                    '❌ Rad etish',
+                    `rejectPhoneAsAdmin=${phoneAd.id}`,
+                  ),
+                ],
+              ],
+            },
           },
         );
         await ctx.scene.leave();
