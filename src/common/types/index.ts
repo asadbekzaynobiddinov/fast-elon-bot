@@ -8,5 +8,9 @@ export type ContextType = Context &
       lastMessage: any;
       home_id: string;
       phone_id: string;
+      car_id: string;
+      home_photos: string[];
+      car_photos: string[];
+      phone_photos: string[];
     };
   };

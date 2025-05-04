@@ -14,6 +14,9 @@ const telegrafModuleOptions = (): TelegrafModuleOptions => {
       async (ctx, next) => {
         if (!ctx.session) {
           ctx.session = {};
+          ctx.session.car_photos = [];
+          ctx.session.phone_photos = [];
+          ctx.session.home_photos = [];
         }
         await next();
       },

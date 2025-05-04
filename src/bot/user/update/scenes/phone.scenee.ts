@@ -53,9 +53,7 @@ export class PhoneScene {
         return;
       }
 
-      phoneAd.pictures.push(fileId);
-      await this.phoneRepo.save(phoneAd);
-      console.log(phoneAd.pictures);
+      ctx.session.phone_photos.push(fileId);
     } catch (error) {
       console.error('Rasm qabul qilishda xato:', error);
     }
@@ -73,12 +71,14 @@ export class PhoneScene {
       return;
     }
 
-    if ((phoneAd?.pictures ?? []).length < 3) {
+    if (ctx.session.phone_photos.length < 3) {
       await ctx.reply(minPicLeghth[ctx.session.lang] as string);
       return;
     }
     phoneAd.last_state = 'awaitName';
+    phoneAd.pictures = ctx.session.phone_photos;
     await this.phoneRepo.save(phoneAd);
+    ctx.session.phone_photos = [];
     await ctx.reply(phoneNameMessage[ctx.session.lang] as string);
   }
 

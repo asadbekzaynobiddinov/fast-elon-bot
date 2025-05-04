@@ -1,12 +1,18 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User, Home, Phone } from 'src/core';
+import { User, Home, Phone, Car } from 'src/core';
 import { UserLangActions } from './user-lang.actions';
-import { HomeActions } from './home.actions';
+import { UserHomeActions } from './home.actions';
 import { UserPhoneActions } from './phone.actions';
+import { UserCarActions } from './car.actions';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Home, Phone])],
-  providers: [UserLangActions, HomeActions, UserPhoneActions],
+  imports: [TypeOrmModule.forFeature([User, Home, Phone, Car])],
+  providers: [
+    UserLangActions,
+    UserHomeActions,
+    UserPhoneActions,
+    UserCarActions,
+  ],
 })
 export class UserActionsModule {}

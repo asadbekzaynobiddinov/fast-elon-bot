@@ -10,7 +10,7 @@ export class Car extends BaseModel {
   year: string;
 
   @Column({ type: 'varchar', nullable: true })
-  mileage: number;
+  mileage: string;
 
   @Column({ type: 'varchar', nullable: true })
   condition: string;
@@ -30,7 +30,7 @@ export class Car extends BaseModel {
   @Column({ type: 'varchar', nullable: true })
   contact_number: string;
 
-  @Column({ type: 'simple-array', nullable: true, default: [] })
+  @Column({ type: 'simple-array', nullable: true })
   pictures: string[];
 
   @Column({ type: 'varchar', nullable: true })

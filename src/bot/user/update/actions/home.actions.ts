@@ -9,7 +9,7 @@ import { HomeType } from 'src/common/enum';
 
 @UseGuards(LangGuard)
 @Update()
-export class HomeActions {
+export class UserHomeActions {
   constructor(
     @InjectRepository(Home) private readonly homeRepo: HomeRepository,
   ) {}

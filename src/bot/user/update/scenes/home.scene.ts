@@ -55,8 +55,7 @@ export class HomeScene {
         return;
       }
 
-      homeAd.pictures.push(fileId);
-      await this.homeRepo.save(homeAd);
+      ctx.session.home_photos.push(fileId);
     } catch (error) {
       console.error('Rasm qabul qilishda xato:', error);
     }
@@ -72,12 +71,14 @@ export class HomeScene {
       return;
     }
 
-    if ((homeAdd?.pictures ?? []).length < 3) {
+    if (ctx.session.home_photos.length < 3) {
       await ctx.reply(minPicLeghth[ctx.session.lang] as string);
       return;
     }
     homeAdd.last_state = 'awaitAddress';
+    homeAdd.pictures = ctx.session.home_photos;
     await this.homeRepo.save(homeAdd);
+    ctx.session.home_photos = [];
     await ctx.reply(addressMessage[ctx.session.lang] as string);
   }
 
