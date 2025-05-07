@@ -12,5 +12,6 @@ export type ContextType = Context &
       home_photos: string[];
       car_photos: string[];
       phone_photos: string[];
+      work_id: string;
     };
   };

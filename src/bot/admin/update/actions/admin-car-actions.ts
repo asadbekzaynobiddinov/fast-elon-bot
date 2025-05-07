@@ -37,7 +37,8 @@ export class AdminCarActions {
               `<b>📌 Hudud:</b> ${carAd.region}\n` +
               `<b>💰 Narxi:</b> ${carAd.price}\n` +
               `<b>📝 Qo'shimcha ma'lumot:</b> ${carAd.additonal_info}\n` +
-              `<b>📞 Kontakt:</b> ${carAd.contact_number}`
+              `<b>📞 Kontakt:</b> ${carAd.contact_number}\n\n` +
+              `<a href="https://t.me/${ctx.botInfo.username}">E'lon berish uchun bosing</a>`
             : undefined,
         parse_mode: index === 0 ? 'HTML' : undefined,
       })),

@@ -1,10 +1,17 @@
 import { Entity, Column } from 'typeorm';
 import { BaseModel } from 'src/common/database';
+import { WorkType } from 'src/common/enum';
 
-@Entity('jobs')
-export class Job extends BaseModel {
-  @Column()
+@Entity('works')
+export class Work extends BaseModel {
+  @Column({ type: 'enum', enum: WorkType, nullable: true })
+  type: WorkType;
+
+  @Column({ type: 'varchar', nullable: true })
   title: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  name: string;
 
   @Column({ type: 'varchar', nullable: true })
   location: string;
@@ -16,7 +23,7 @@ export class Job extends BaseModel {
   description: string;
 
   @Column({ type: 'varchar', nullable: true })
-  deadline: Date;
+  deadline: string;
 
   @Column({ type: 'varchar', nullable: true })
   salary: string;

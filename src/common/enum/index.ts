@@ -13,3 +13,8 @@ export enum PhoneType {
   IPHONE = 'iphone',
   ANDROID = 'android',
 }
+
+export enum WorkType {
+  WORKJOBEMPLOYER = 'workJobEmployer',
+  WORKJOBSEEKER = 'workJobSeeker',
+}

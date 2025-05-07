@@ -45,7 +45,8 @@ export class AdminHomeActions {
               `📐 <b>Uy maydoni:</b> ${homeAdd.square}\n` +
               `💰 <b>Narx:</b> ${homeAdd.price}\n` +
               `📞 <b>Bog'lanish uchun:</b> @Fastelonuz\n` +
-              `ℹ️ <b>Qo'shimcha ma'lumotlar:</b> ${homeAdd.additional_information}`
+              `ℹ️ <b>Qo'shimcha ma'lumotlar:</b> ${homeAdd.additional_information}\n\n` +
+              `<a href="https://t.me/${ctx.botInfo.username}">E'lon berish uchun bosing</a>`
             : undefined,
       })),
     );

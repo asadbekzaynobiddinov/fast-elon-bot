@@ -42,7 +42,8 @@ export class AdminPhoneActions {
               `🔋 <b>Batareyasi:</b> ${phoneAd.battery_condition}\n` +
               `🌍 <b>Hududi:</b> ${phoneAd.region}\n` +
               `📞 <b>Bog'lanish uchun raqam:</b> ${phoneAd.contact_number}\n` +
-              `💵 <b>Narxi:</b> ${phoneAd.price}\n`
+              `💵 <b>Narxi:</b> ${phoneAd.price}\n\n` +
+              `<a href="https://t.me/${ctx.botInfo.username}">E'lon berish uchun bosing</a>`
             : undefined,
       })),
     );
