@@ -179,7 +179,8 @@ export class CarScene {
             media: pic,
             caption:
               index === 0
-                ? `<b>🚗 ${carAd.name}</b>\n\n` +
+                ? `<b>🆔 ID:</b> ${carAd.id}\n\n` +
+                  `<b>🚗 ${carAd.name}</b>\n\n` +
                   `<b>📍 Probeg:</b> ${carAd.mileage} km\n` +
                   `<b>📅 Yili:</b> ${carAd.year}\n` +
                   `<b>⚙️ Holati:</b> ${carAd.condition}\n` +
@@ -201,7 +202,8 @@ export class CarScene {
             media: pic,
             caption:
               index === 0
-                ? `<b>🚗 ${carAd.name}</b>\n\n` +
+                ? `<b>🆔 ID:</b> ${carAd.id}\n\n` +
+                  `<b>🚗 ${carAd.name}</b>\n\n` +
                   `<b>📍 Probeg:</b> ${carAd.mileage} km\n` +
                   `<b>📅 Yili:</b> ${carAd.year}\n` +
                   `<b>⚙️ Holati:</b> ${carAd.condition}\n` +

@@ -45,8 +45,6 @@ export class HomeScene {
 
       const fileId: string = photo[photo.length - 1].file_id;
 
-      console.log('rasm qabul qilindi', fileId);
-
       const homeAd = await this.homeRepo.findOne({
         where: { id: ctx.session.home_id },
       });
@@ -88,7 +86,6 @@ export class HomeScene {
       where: { id: ctx.session.home_id },
     });
     if (!homeAdd) {
-      console.log('topilmadi');
       return;
     }
     switch (homeAdd.last_state) {

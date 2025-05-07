@@ -18,7 +18,6 @@ export class UserCarActions {
     });
     await this.carRepo.save(newCar);
     ctx.session.car_id = newCar.id;
-    console.log(ctx.session);
     await ctx.scene.enter('carScene');
   }
 }

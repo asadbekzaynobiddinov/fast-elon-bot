@@ -43,8 +43,6 @@ export class PhoneScene {
 
       const fileId: string = photo[photo.length - 1].file_id;
 
-      console.log('rasm qabul qilindi', fileId);
-
       const phoneAd = await this.phoneRepo.findOne({
         where: { id: ctx.session.phone_id },
       });
@@ -64,8 +62,6 @@ export class PhoneScene {
     const phoneAd = await this.phoneRepo.findOne({
       where: { id: ctx.session.phone_id },
     });
-
-    console.log(phoneAd);
 
     if (!phoneAd) {
       return;

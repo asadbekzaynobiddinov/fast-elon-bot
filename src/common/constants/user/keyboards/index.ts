@@ -120,3 +120,15 @@ export const additionalKeyForPhone = {
   ru: '🛒 Купить',
   en: '🛒 Buy',
 };
+
+export const workMenu: Record<string, InlineKeyboardMarkup> = {
+  uz: {
+    inline_keyboard: [
+      [
+        Markup.button.callback('💼 Ish Beruvchi', 'workEmployer'),
+        Markup.button.callback('👨‍💻 Ish Izlovchi', 'workJobSeeker'),
+      ],
+      [Markup.button.callback('◀️ Orqaga', 'backFromWorkMenu')],
+    ],
+  },
+};
