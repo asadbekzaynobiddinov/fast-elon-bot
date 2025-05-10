@@ -22,7 +22,6 @@ export class UserWorkActions {
 
   @Action('workEmployer')
   async workEmployer(@Ctx() ctx: ContextType) {
-    await ctx.answerCbQuery("Ish beruvchi bo'lishni tanladingiz");
     const newWorkAd = this.workRepo.create({
       type: WorkType.WORKJOBEMPLOYER,
       title: 'Xodim kerak',
@@ -35,7 +34,6 @@ export class UserWorkActions {
 
   @Action('workJobSeeker')
   async workJobSeeker(@Ctx() ctx: ContextType) {
-    await ctx.answerCbQuery("Ish izlovchi bo'lishni tanladingiz");
     const newWorkAd = this.workRepo.create({
       type: WorkType.WORKJOBSEEKER,
       title: 'Ish joyi kerak',

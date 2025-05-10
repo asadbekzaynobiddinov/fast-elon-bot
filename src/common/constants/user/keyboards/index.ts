@@ -13,11 +13,7 @@ export const usersMenu: Record<string, InlineKeyboardMarkup> = {
         Markup.button.callback('💼 Ish', 'work'),
         Markup.button.callback("🏪 Do'konlar", 'shops'),
       ],
-      [
-        Markup.button.callback('🛒 Buyuyrtma', 'order'),
-        Markup.button.callback('⚙️ Sozlamalar', 'settings'),
-      ],
-      [Markup.button.callback('🌐 Tilni o`zgartirish', 'changeLang')],
+      [Markup.button.callback('⚙️ Sozlamalar', 'settings')],
     ],
   },
   ru: {
@@ -31,11 +27,7 @@ export const usersMenu: Record<string, InlineKeyboardMarkup> = {
         Markup.button.callback('💼 Работа', 'work'),
         Markup.button.callback('🏪 Магазины', 'shops'),
       ],
-      [
-        Markup.button.callback('🛒 Заказ', 'order'),
-        Markup.button.callback('⚙️ Настройки', 'settings'),
-      ],
-      [Markup.button.callback('🌐 Изменить язык', 'changeLang')],
+      [Markup.button.callback('⚙️ Настройки', 'settings')],
     ],
   },
   en: {
@@ -49,11 +41,7 @@ export const usersMenu: Record<string, InlineKeyboardMarkup> = {
         Markup.button.callback('💼 Work', 'work'),
         Markup.button.callback('🏪 Shops', 'shops'),
       ],
-      [
-        Markup.button.callback('🛒 Order', 'order'),
-        Markup.button.callback('⚙️ Settings', 'settings'),
-      ],
-      [Markup.button.callback('🌐 Change Language', 'changeLang')],
+      [Markup.button.callback('⚙️ Settings', 'settings')],
     ],
   },
 };
@@ -129,6 +117,78 @@ export const workMenu: Record<string, InlineKeyboardMarkup> = {
         Markup.button.callback('👨‍💻 Ish Izlovchi', 'workJobSeeker'),
       ],
       [Markup.button.callback('◀️ Orqaga', 'backFromWorkMenu')],
+    ],
+  },
+};
+
+export const settingsMenu: Record<string, InlineKeyboardMarkup> = {
+  uz: {
+    inline_keyboard: [
+      [Markup.button.callback('🌐 Tilni o`zgartirish', 'changeLang')],
+      [Markup.button.callback("📱 Biz bilan bog'lanish ", 'constactUs')],
+      [Markup.button.callback('◀️ Orqaga', 'backFromSettingsMenu')],
+    ],
+  },
+  ru: {
+    inline_keyboard: [
+      [Markup.button.callback('🌐 Изменить язык', 'changeLang')],
+      [Markup.button.callback('📱 Связаться с нами', 'constactUs')],
+      [Markup.button.callback('◀️ Назад', 'backFromSettingsMenu')],
+    ],
+  },
+  en: {
+    inline_keyboard: [
+      [Markup.button.callback('🌐 Change Language', 'changeLang')],
+      [Markup.button.callback('📱 Contact Us', 'constactUs')],
+      [Markup.button.callback('◀️ Back', 'backFromSettingsMenu')],
+    ],
+  },
+};
+
+export const contactUsMenu: Record<string, InlineKeyboardMarkup> = {
+  uz: {
+    inline_keyboard: [
+      [Markup.button.url('Telegram', 'https://t.me/Fastelonuz')],
+      [Markup.button.callback('◀️ Orqaga', 'backFromContactUs')],
+    ],
+  },
+  ru: {
+    inline_keyboard: [
+      [Markup.button.url('Telegram', 'https://t.me/Fastelonuz')],
+      [Markup.button.callback('◀️ Назад', 'backFromContactUs')],
+    ],
+  },
+  en: {
+    inline_keyboard: [
+      [Markup.button.url('Telegram', 'https://t.me/Fastelonuz')],
+      [Markup.button.callback('◀️ Back', 'backFromContactUs')],
+    ],
+  },
+};
+
+export const changeLangMenu: Record<string, InlineKeyboardMarkup> = {
+  uz: {
+    inline_keyboard: [
+      [Markup.button.callback('🇺🇿 O`zbekcha', 'setUz')],
+      [Markup.button.callback('🇷🇺 Русский', 'setRu')],
+      [Markup.button.callback('🇬🇧 English', 'setEn')],
+      [Markup.button.callback('◀️ Orqaga', 'backFromChangeLang')],
+    ],
+  },
+  ru: {
+    inline_keyboard: [
+      [Markup.button.callback('🇺🇿 Узбек', 'setUz')],
+      [Markup.button.callback('🇷🇺 Русский', 'setRu')],
+      [Markup.button.callback('🇬🇧 Английский', 'setEn')],
+      [Markup.button.callback('◀️ Назад', 'backFromChangeLang')],
+    ],
+  },
+  en: {
+    inline_keyboard: [
+      [Markup.button.callback('🇺🇿 Uzbek', 'setUz')],
+      [Markup.button.callback('🇷🇺 Russian', 'setRu')],
+      [Markup.button.callback('🇬🇧 English', 'setEn')],
+      [Markup.button.callback('◀️ Back', 'backFromChangeLang')],
     ],
   },
 };
