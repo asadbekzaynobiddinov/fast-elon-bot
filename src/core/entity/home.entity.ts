@@ -42,4 +42,7 @@ export class Home extends BaseModel {
 
   @Column({ type: 'varchar', nullable: true })
   user_id: string;
+
+  @Column({ type: 'boolean', default: true })
+  isAvailable: boolean;
 }
