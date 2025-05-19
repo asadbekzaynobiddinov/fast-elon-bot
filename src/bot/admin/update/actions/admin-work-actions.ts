@@ -7,7 +7,10 @@ import { Work, WorkRepository } from 'src/core';
 import { ContextType } from 'src/common/types';
 import { config } from 'src/config';
 import { WorkType } from 'src/common/enum';
+import { UseGuards } from '@nestjs/common';
+import { AdminGuard } from 'src/common/guard/admin.guard';
 
+@UseGuards(AdminGuard)
 @Update()
 export class AdminWorkActions {
   constructor(

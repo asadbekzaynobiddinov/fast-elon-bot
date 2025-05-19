@@ -7,7 +7,10 @@ import { Home, HomeRepository } from 'src/core';
 import { ContextType } from 'src/common/types';
 import { config } from 'src/config';
 import { HomeType } from 'src/common/enum';
+import { AdminGuard } from 'src/common/guard/admin.guard';
+import { UseGuards } from '@nestjs/common';
 
+@UseGuards(AdminGuard)
 @Update()
 export class AdminHomeActions {
   constructor(
@@ -66,5 +69,43 @@ export class AdminHomeActions {
       console.log(error.message);
       await ctx.reply('Bekor ilishda xatolik yuz berdi ❌');
     }
+  }
+
+  @Action(/giveToClient/)
+  async giveToClient(@Ctx() ctx: ContextType) {
+    const [, id] = (ctx.update as any).callback_query.data.split('=');
+    const homeAdd = await this.homeRepo.findOne({
+      where: { id: id as string },
+    });
+
+    if (!homeAdd) {
+      return;
+    }
+    if (!homeAdd.is_available) {
+      await ctx.answerCbQuery('Bu uy allaqachon mijozga topshirilgan', {
+        show_alert: true,
+      });
+      return;
+    }
+    homeAdd.is_available = false;
+    await this.homeRepo.save(homeAdd);
+    await ctx.editMessageCaption(
+      `🆔 <b>Id:</b> ${homeAdd.id}\n\n` +
+        (homeAdd.type == HomeType.REAL_ESTATE
+          ? '<b>Uy sotiladi.</b>\n\n'
+          : '<b>Uy ijaraga beriladi.</b>\n\n') +
+        `📍 <b>Manzili:</b> ${homeAdd.location}\n` +
+        `🏢 <b>Qavatlar soni:</b> ${homeAdd.floors_of_building}\n` +
+        `🏬 <b>Uy joylashgan qavati:</b> ${homeAdd.floor_number}\n` +
+        `🛏️ <b>Xonalar soni:</b> ${homeAdd.rooms}\n` +
+        `📐 <b>Uy maydoni:</b> ${homeAdd.square}\n` +
+        `💰 <b>Narx:</b> ${homeAdd.price}\n` +
+        `📞 <b>Bog'lanish uchun:</b> ${homeAdd.number_for_contact}\n` +
+        `ℹ️ <b>Qo'shimcha ma'lumotlar:</b> ${homeAdd.additional_information}\n\n` +
+        `Ijaraga berildi ❌`,
+      {
+        parse_mode: 'HTML',
+      },
+    );
   }
 }

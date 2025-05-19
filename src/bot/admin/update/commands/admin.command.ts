@@ -1,133 +1,65 @@
-import { Command, Update, Ctx, On, Action } from 'nestjs-telegraf';
+import { Command, Update, Ctx } from 'nestjs-telegraf';
 import { ContextType } from 'src/common/types';
-import { AdminRepository, Admin, HomeRepository, Home } from 'src/core';
+import { Store, StoreRepository } from 'src/core';
+import { UseGuards } from '@nestjs/common';
+import { AdminGuard } from 'src/common/guard/admin.guard';
 import { InjectRepository } from '@nestjs/typeorm';
-import { HomeType } from 'src/common/enum';
-import { Markup } from 'telegraf';
 
+@UseGuards(AdminGuard)
 @Update()
 export class AdminCommands {
   constructor(
-    @InjectRepository(Admin) private readonly adminRepo: AdminRepository,
-    @InjectRepository(Home) private readonly homeRepo: HomeRepository,
+    @InjectRepository(Store) private readonly storeRepo: StoreRepository,
   ) {}
-
   @Command('admin')
   async start(@Ctx() ctx: ContextType) {
-    const admin = await this.adminRepo.findOne({
-      where: { telegram_id: ctx.from?.id.toString() },
-    });
-    if (!admin) {
-      return;
-    }
-    await ctx.reply('/search - Uy elonlarini qidirish');
+    await ctx.reply(
+      "/search - Uy elonlarini qidirish\n/addStore - Do'kon qo'shish\n/storeList - Do'konlar ro'yxati\n",
+    );
   }
 
   @Command('search')
   async search(@Ctx() ctx: ContextType) {
-    const admin = await this.adminRepo.findOne({
-      where: { telegram_id: ctx.from?.id.toString() },
-    });
-    if (!admin) {
-      return;
-    }
-    admin.last_state = 'searchingHomes';
-    await this.adminRepo.save(admin);
-    await ctx.reply('Qidirish uchun id kiriting');
+    await ctx.scene.enter('adminHomeScene');
   }
 
-  @On('text')
-  async onText(@Ctx() ctx: ContextType) {
-    const admin = await this.adminRepo.findOne({
-      where: { telegram_id: ctx.from?.id.toString() },
+  @Command('addStore')
+  async addStore(@Ctx() ctx: ContextType) {
+    const newStore = this.storeRepo.create({
+      last_state: 'awaitButtonName',
     });
-    if (!admin || admin.last_state !== 'searchingHomes') {
+    await this.storeRepo.save(newStore);
+    ctx.session.store_id = newStore.id;
+    await ctx.scene.enter('adminStoreScene');
+  }
+
+  @Command('storeList')
+  async storeList(@Ctx() ctx: ContextType) {
+    const stores = await this.storeRepo.find();
+    if (stores.length === 0) {
+      await ctx.reply("Do'konlar ro'yxati bo'sh.");
       return;
     }
-    const id = (ctx.update as { message: { text: string } }).message.text;
-    const homeAdd = await this.homeRepo.findOne({
-      where: { id },
-    });
-    if (!homeAdd) {
-      await ctx.reply('Bunday uy topilmadi');
-      return;
+
+    const buttons: { text: string; callback_data: string }[][] = [];
+    for (let i = 0; i < stores.length; i += 2) {
+      const row: { text: string; callback_data: string }[] = [];
+      row.push({
+        text: `${stores[i].button_name}`,
+        callback_data: `storeId=${stores[i].id}`,
+      });
+      if (stores[i + 1]) {
+        row.push({
+          text: `${stores[i + 1].button_name}`,
+          callback_data: `storeId=${stores[i + 1].id}`,
+        });
+      }
+      buttons.push(row);
     }
-    const message =
-      `🆔 <b>Id:</b> ${homeAdd.id}\n\n` +
-      (homeAdd.type == HomeType.REAL_ESTATE
-        ? '<b>Uy sotiladi.</b>\n\n'
-        : '<b>Uy ijaraga beriladi.</b>\n\n') +
-      `📍 <b>Manzili:</b> ${homeAdd.location}\n` +
-      `🏢 <b>Qavatlar soni:</b> ${homeAdd.floors_of_building}\n` +
-      `🏬 <b>Uy joylashgan qavati:</b> ${homeAdd.floor_number}\n` +
-      `🛏️ <b>Xonalar soni:</b> ${homeAdd.rooms}\n` +
-      `📐 <b>Uy maydoni:</b> ${homeAdd.square}\n` +
-      `💰 <b>Narx:</b> ${homeAdd.price}\n` +
-      `📞 <b>Bog'lanish uchun:</b> ${homeAdd.number_for_contact}\n` +
-      `ℹ️ <b>Qo'shimcha ma'lumotlar:</b> ${homeAdd.additional_information}\n\n` +
-      `${homeAdd.is_available ? 'Hozirda mavjud ✅' : 'Ijaraga berilgan ❌'}`;
-    await ctx.sendPhoto(homeAdd.pictures[0], {
-      caption: message,
-      parse_mode: 'HTML',
+    await ctx.reply("Do'konlar ro'yxati:", {
       reply_markup: {
-        inline_keyboard: [
-          [
-            Markup.button.callback(
-              'Mijozga topshirish',
-              `giveToClient=${homeAdd.id}`,
-            ),
-          ],
-        ],
+        inline_keyboard: buttons,
       },
     });
-  }
-
-  @Action(/giveToClient/)
-  async giveToClient(@Ctx() ctx: ContextType) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const [, id] = (ctx.update as any).callback_query.data.split('=');
-    const homeAdd = await this.homeRepo.findOne({
-      where: { id: id as string },
-    });
-    const admin = await this.adminRepo.findOne({
-      where: { telegram_id: ctx.from?.id.toString() },
-    });
-    if (!admin) {
-      await ctx.answerCbQuery('Siz admin emassiz', {
-        show_alert: true,
-      });
-      return;
-    }
-    if (!homeAdd) {
-      return;
-    }
-    if (!homeAdd.is_available) {
-      await ctx.answerCbQuery('Bu uy allaqachon mijozga topshirilgan', {
-        show_alert: true,
-      });
-      return;
-    }
-    homeAdd.is_available = false;
-    await this.homeRepo.save(homeAdd);
-    await ctx.editMessageCaption(
-      `🆔 <b>Id:</b> ${homeAdd.id}\n\n` +
-        (homeAdd.type == HomeType.REAL_ESTATE
-          ? '<b>Uy sotiladi.</b>\n\n'
-          : '<b>Uy ijaraga beriladi.</b>\n\n') +
-        `📍 <b>Manzili:</b> ${homeAdd.location}\n` +
-        `🏢 <b>Qavatlar soni:</b> ${homeAdd.floors_of_building}\n` +
-        `🏬 <b>Uy joylashgan qavati:</b> ${homeAdd.floor_number}\n` +
-        `🛏️ <b>Xonalar soni:</b> ${homeAdd.rooms}\n` +
-        `📐 <b>Uy maydoni:</b> ${homeAdd.square}\n` +
-        `💰 <b>Narx:</b> ${homeAdd.price}\n` +
-        `📞 <b>Bog'lanish uchun:</b> ${homeAdd.number_for_contact}\n` +
-        `ℹ️ <b>Qo'shimcha ma'lumotlar:</b> ${homeAdd.additional_information}\n\n` +
-        `Ijaraga berildi ❌`,
-      {
-        parse_mode: 'HTML',
-      },
-    );
-    admin.last_state = '';
-    await this.adminRepo.save(admin);
   }
 }

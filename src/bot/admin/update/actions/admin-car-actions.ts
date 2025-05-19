@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Update, Ctx, Action } from 'nestjs-telegraf';
+import { AdminGuard } from 'src/common/guard/admin.guard';
 import { ContextType } from 'src/common/types';
 import { config } from 'src/config';
 import { Car, CarRepository } from 'src/core';
 
+@UseGuards(AdminGuard)
 @Update()
 export class AdminCarActions {
   constructor(@InjectRepository(Car) private readonly carRepo: CarRepository) {}

@@ -6,7 +6,10 @@ import { Update, Ctx, Action } from 'nestjs-telegraf';
 import { Phone, PhoneRepository } from 'src/core';
 import { ContextType } from 'src/common/types';
 import { config } from 'src/config';
+import { UseGuards } from '@nestjs/common';
+import { AdminGuard } from 'src/common/guard/admin.guard';
 
+@UseGuards(AdminGuard)
 @Update()
 export class AdminPhoneActions {
   constructor(
