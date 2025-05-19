@@ -3,9 +3,11 @@ import { Update, Action, Ctx } from 'nestjs-telegraf';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ContextType } from 'src/common/types';
 import { Car, CarRepository } from 'src/core';
-import { LangGuard } from 'src/common/guard/lang-guard';
+import { LangGuard } from 'src/common/guard/lang.guard';
+import { LastMessageGuard } from 'src/common/guard/last-message.guard';
 
 @UseGuards(LangGuard)
+@UseGuards(LastMessageGuard)
 @Update()
 export class UserCarActions {
   constructor(@InjectRepository(Car) private readonly carRepo: CarRepository) {}

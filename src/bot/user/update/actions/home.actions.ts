@@ -4,10 +4,12 @@ import { homeMenu, userMainMessage, usersMenu } from 'src/common/constants';
 import { Home, HomeRepository } from 'src/core';
 import { ContextType } from 'src/common/types';
 import { UseGuards } from '@nestjs/common';
-import { LangGuard } from 'src/common/guard/lang-guard';
+import { LangGuard } from 'src/common/guard/lang.guard';
 import { HomeType } from 'src/common/enum';
+import { LastMessageGuard } from 'src/common/guard/last-message.guard';
 
 @UseGuards(LangGuard)
+@UseGuards(LastMessageGuard)
 @Update()
 export class UserHomeActions {
   constructor(

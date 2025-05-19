@@ -9,13 +9,15 @@ import {
   usersMenu,
 } from 'src/common/constants';
 import { PhoneType } from 'src/common/enum';
-import { LangGuard } from 'src/common/guard/lang-guard';
+import { LangGuard } from 'src/common/guard/lang.guard';
+import { LastMessageGuard } from 'src/common/guard/last-message.guard';
 import { ContextType } from 'src/common/types';
 import { config } from 'src/config';
 import { Phone, PhoneRepository } from 'src/core';
 import { Markup } from 'telegraf';
 
 @UseGuards(LangGuard)
+@UseGuards(LastMessageGuard)
 @Update()
 export class UserPhoneActions {
   constructor(

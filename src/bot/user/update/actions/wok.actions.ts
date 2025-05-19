@@ -2,12 +2,14 @@ import { UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Update, Ctx, Action } from 'nestjs-telegraf';
 import { userMainMessage, usersMenu, workMenu } from 'src/common/constants';
-import { LangGuard } from 'src/common/guard/lang-guard';
+import { LangGuard } from 'src/common/guard/lang.guard';
 import { ContextType } from 'src/common/types';
 import { Work, WorkRepository } from 'src/core';
 import { WorkType } from 'src/common/enum';
+import { LastMessageGuard } from 'src/common/guard/last-message.guard';
 
 @UseGuards(LangGuard)
+@UseGuards(LastMessageGuard)
 @Update()
 export class UserWorkActions {
   constructor(

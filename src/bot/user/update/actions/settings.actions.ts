@@ -9,11 +9,13 @@ import {
   userMainMessage,
   usersMenu,
 } from 'src/common/constants';
-import { LangGuard } from 'src/common/guard/lang-guard';
+import { LangGuard } from 'src/common/guard/lang.guard';
 import { ContextType } from 'src/common/types';
 import { UserLang } from 'src/common/enum';
+import { LastMessageGuard } from 'src/common/guard/last-message.guard';
 
 @UseGuards(LangGuard)
+@UseGuards(LastMessageGuard)
 @Update()
 export class UserSettingsActions {
   constructor(

@@ -4,6 +4,12 @@ export const userMainMessage = {
   en: 'Select the required section: ',
 };
 
+export const lastMessageText = {
+  uz: "So'ngi menyudan foydalaning !",
+  ru: 'Используйте последнее меню!',
+  en: 'Use the last menu!',
+};
+
 export const askHomePicturesMessage = {
   uz: "Iltimos, uy rasmlarini yuboring.\nEng kamida 3 ta rasm yuborishingiz kerak.\nKiritib bo'lganingizdan so'ng <b>/done</b> buyug'ni bering!",
   ru: 'Пожалуйста, отправьте фотографии дома.\nВы должны отправить не менее 3 фотографий.\nПосле завершения введите команду <b>/done!</b>',
