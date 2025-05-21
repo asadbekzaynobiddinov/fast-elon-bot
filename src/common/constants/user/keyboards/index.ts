@@ -4,7 +4,7 @@ import { InlineKeyboardMarkup } from 'telegraf/typings/core/types/typegram';
 export const usersMenu: Record<string, InlineKeyboardMarkup> = {
   uz: {
     inline_keyboard: [
-      [Markup.button.callback('🏠 Uy Zona', 'home')],
+      [Markup.button.callback('🏠 Uyzone', 'home')],
       [
         Markup.button.callback('📱 Telefonlar', 'phones'),
         Markup.button.callback('🚗 Avtomobil', 'cars'),
