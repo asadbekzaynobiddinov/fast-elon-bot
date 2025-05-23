@@ -1,7 +1,7 @@
 export const userMainMessage = {
-  uz: "Kerakli bo'limni tanlnag: ",
-  ru: 'Выберите необходимый раздел: ',
-  en: 'Select the required section: ',
+  uz: "O'zingiz uchun kerakli bo'lgan bo'limni tanlang:",
+  ru: 'Выберите подходящий для себя раздел:',
+  en: 'Select the section that suits you best:',
 };
 
 export const lastMessageText = {
