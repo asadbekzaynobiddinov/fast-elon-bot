@@ -209,7 +209,7 @@ export class HomeScene {
                   `🛏️ <b>Xonalar soni:</b> ${homeAdd.rooms}\n` +
                   `📐 <b>Uy maydoni:</b> ${homeAdd.square}\n` +
                   `💰 <b>Narx:</b> ${homeAdd.price}\n` +
-                  `📞 <b>Bog'lanish uchun:</b> @Fastelonuz\n` +
+                  `📞 <b>Bog'lanish uchun:</b> ${homeAdd.number_for_contact}\n` +
                   `ℹ️ <b>Qo'shimcha ma'lumotlar:</b> ${homeAdd.additional_information}`
                 : undefined,
           })),
