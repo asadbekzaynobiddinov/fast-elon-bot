@@ -1,7 +1,7 @@
 export const carPictureMessage = {
-  uz: "Iltimos, mashina rasmlarini yuboring.\nEng kamida 3 ta rasm yuborishingiz kerak.\nKiritib bo'lganingizdan so'ng <b>/done</b> buyug'ni bering!",
-  ru: 'Пожалуйста, отправьте фотографии машины.\nВы должны отправить не менее 3 фотографий.\nПосле завершения введите команду <b>/done!</b>',
-  en: 'Please send the car pictures.\nYou must send at least 3 pictures.\nOnce done, use the <b>/done</b> command!',
+  uz: "Iltimos, mashina rasmlarini yuboring.\nEng kamida 3 ta rasm yuborishingiz kerak.\nKiritib bo'lganingizdan so'ng <b>/done</b> buyug'ni bering!\nE'lonni bekor qilish uhun <b>/cancel</b> buyug'ni bering!",
+  ru: 'Пожалуйста, отправьте фотографии машины.\nВы должны отправить не менее 3 фотографий.\nПосле завершения введите команду <b>/done!</b>\nДля отмены объявления введите команду <b>/cancel</b>!',
+  en: 'Please send the car pictures.\nYou must send at least 3 pictures.\nOnce done, use the <b>/done</b> command!\nTo cancel the ad, use the <b>/cancel</b> command!',
 };
 
 export const carNameMessage = {

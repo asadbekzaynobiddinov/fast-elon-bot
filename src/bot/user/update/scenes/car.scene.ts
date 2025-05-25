@@ -55,6 +55,20 @@ export class CarScene {
     }
   }
 
+  @Command('cancel')
+  async cancel(@Ctx() ctx: ContextType) {
+    await this.carRepo.delete({ id: ctx.session.car_id });
+    ctx.session.car_id = '';
+    ctx.session.car_photos = [];
+    ctx.session.lastMessage = await ctx.reply(
+      userMainMessage[ctx.session.lang] as string,
+      {
+        reply_markup: usersMenu[ctx.session.lang],
+      },
+    );
+    await ctx.scene.leave();
+  }
+
   @Command('done')
   async done(@Ctx() ctx: ContextType) {
     const carAd = await this.carRepo.findOne({

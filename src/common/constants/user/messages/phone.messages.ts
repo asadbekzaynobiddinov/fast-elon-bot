@@ -1,7 +1,7 @@
 export const phoneImageMessage = {
-  uz: "Iltimos, telefon rasmlarini yuboring.\nEng kamida 3 ta rasm yuborishingiz kerak.\nKiritib bo'lganingizdan so'ng <b>/done</b> buyug'ni bering!",
-  ru: 'Пожалуйста, отправьте фотографии телефона.\nВам нужно отправить минимум 3 фотографии.\nПосле завершения введите команду <b>/done</b>!',
-  en: 'Please send the phone pictures.\nYou need to send at least 3 pictures.\nOnce done, type the <b>/done</b> command!',
+  uz: "Iltimos, telefon rasmlarini yuboring.\nEng kamida 3 ta rasm yuborishingiz kerak.\nKiritib bo'lganingizdan so'ng <b>/done</b> buyug'ni bering!\nE'lonni bekor qilish uchun <b>/cancel</b> buyug'ni bering!",
+  ru: 'Пожалуйста, отправьте фотографии телефона.\nВам нужно отправить минимум 3 фотографии.\nПосле завершения введите команду <b>/done</b>!\nДля отмены объявления введите команду <b>/cancel</b>!',
+  en: 'Please send the phone pictures.\nYou need to send at least 3 pictures.\nOnce done, type the <b>/done</b> command!\nTo cancel the ad, type the <b>/cancel</b> command!',
 };
 
 export const phoneNameMessage = {

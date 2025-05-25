@@ -57,6 +57,19 @@ export class PhoneScene {
     }
   }
 
+  @Command('cancel')
+  async cancel(@Ctx() ctx: ContextType) {
+    await this.phoneRepo.delete({ id: ctx.session.phone_id });
+    ctx.session.phone_id = '';
+    ctx.session.phone_photos = [];
+    ctx.session.lastMessage = await ctx.reply(
+      userMainMessage[ctx.session.lang] as string,
+      {
+        reply_markup: usersMenu[ctx.session.lang],
+      },
+    );
+  }
+
   @Command('done')
   async done(@Ctx() ctx: ContextType) {
     const phoneAd = await this.phoneRepo.findOne({

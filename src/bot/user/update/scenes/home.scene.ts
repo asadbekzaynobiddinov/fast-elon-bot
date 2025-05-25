@@ -59,6 +59,20 @@ export class HomeScene {
     }
   }
 
+  @Command('cancel')
+  async cancel(@Ctx() ctx: ContextType) {
+    await this.homeRepo.delete({ id: ctx.session.home_id });
+    ctx.session.home_id = '';
+    ctx.session.home_photos = [];
+    ctx.session.lastMessage = await ctx.reply(
+      userMainMessage[ctx.session.lang] as string,
+      {
+        reply_markup: usersMenu[ctx.session.lang],
+      },
+    );
+    await ctx.scene.leave();
+  }
+
   @Command('done')
   async done(@Ctx() ctx: ContextType) {
     const homeAdd = await this.homeRepo.findOne({

@@ -1,3 +1,9 @@
+export const workCancelMessages = {
+  uz: `E'lonni bekor qilish uchun <b>/cancel</b> buyug'ni bering!`,
+  ru: 'Отменить объявление можно, введя команду <b>/cancel</b>!',
+  en: 'To cancel the ad, use the <b>/cancel</b> command!',
+};
+
 export const workNameMessages = {
   uz: [
     'Ish beruvchi tashkilot nomini kiriting',

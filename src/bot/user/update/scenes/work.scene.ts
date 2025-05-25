@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Scene, SceneEnter, Ctx, On } from 'nestjs-telegraf';
+import { Scene, SceneEnter, Ctx, On, Command } from 'nestjs-telegraf';
 import { Work, WorkRepository } from 'src/core';
 import { ContextType } from 'src/common/types';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,6 +9,7 @@ import {
   userMainMessage,
   usersMenu,
   workApplicationTimeMessages,
+  workCancelMessages,
   workContactMessages,
   workDeadlineMessages,
   workDescriptionMessages,
@@ -27,20 +28,32 @@ export class WorkScene {
   ) {}
   @SceneEnter()
   async onEnter(@Ctx() ctx: ContextType) {
+    await ctx.editMessageText(workCancelMessages[ctx.session.lang] as string, {
+      parse_mode: 'HTML',
+    });
     const workAd = await this.workRepo.findOne({
       where: { id: ctx.session.work_id },
     });
     if (workAd?.type === WorkType.WORKJOBEMPLOYER) {
-      await ctx.editMessageText(
-        workNameMessages[ctx.session.lang][0] as string,
-      );
+      await ctx.reply(workNameMessages[ctx.session.lang][0] as string);
       return;
     } else if (workAd?.type === WorkType.WORKJOBSEEKER) {
-      await ctx.editMessageText(
-        workNameMessages[ctx.session.lang][1] as string,
-      );
+      await ctx.reply(workNameMessages[ctx.session.lang][1] as string);
       return;
     }
+  }
+
+  @Command('cancel')
+  async cancel(@Ctx() ctx: ContextType) {
+    await this.workRepo.delete({ id: ctx.session.work_id });
+    ctx.session.work_id = '';
+    ctx.session.lastMessage = await ctx.reply(
+      userMainMessage[ctx.session.lang] as string,
+      {
+        reply_markup: usersMenu[ctx.session.lang],
+      },
+    );
+    await ctx.scene.leave();
   }
 
   @On('text')
