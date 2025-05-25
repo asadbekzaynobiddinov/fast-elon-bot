@@ -33,6 +33,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -41,11 +42,10 @@ jobs:
         run: |
           echo "${{ secrets.PRIVATE_KEY }}" > private_key.pem
           chmod 600 private_key.pem
-          ssh -o StrictHostKeyChecking=no -i private_key.pem ${{secrets.USER}}@${{secrets.HOST}} << 'EOF'
-          cd fast-elon-bot
-          npx pm2 delete FastElon
-          git pull origin main
-          npm i -g pnpm
-          pnpm i
-          npx pm2 start index.js --name FastElon
-          EOF
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.USER }}@${{ secrets.HOST }} <<EOF
+            cd fast-elon-bot
+            npx pm2 delete FastElon || true
+            git pull origin main
+            npm i -g pnpm
+            pnpm i
+            npx pm2 start index.js --name FastElon
