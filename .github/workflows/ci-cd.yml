@@ -36,10 +36,9 @@ jobs:
 
       - name: Deploy to server
         run: |
-          echo "${{ secrets.KEY }}" > private_key.pem << 'EOF'
+          echo "${{ secrets.KEY }}" > private_key.pem
           chmod 600 private_key.pem
           ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.USER }}@${{ secrets.HOST }} << 'EOF'
-          export PATH=/home/bitnami/.nvm/versions/node/v23.10.0/bin:$PATH
           cd fast-elon-bot
           npx pm2 delete FastElon
           git pull origin main
