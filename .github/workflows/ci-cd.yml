@@ -39,12 +39,13 @@ jobs:
 
       - name: Deploy to server
         run: |
-          echo "${{ secrets.KEY }}" > private_key.pem
+          echo "${{ secrets.PRIVATE_KEY }}" > private_key.pem
           chmod 600 private_key.pem
-          ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.USER }}@${{ secrets.HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ${{secrets.USER}}@${{secrets.HOST}} << 'EOF'
           cd fast-elon-bot
           npx pm2 delete FastElon
           git pull origin main
-          npm i -g pnpm 
+          npm i -g pnpm
           pnpm i
           npx pm2 start index.js --name FastElon
+          EOF
