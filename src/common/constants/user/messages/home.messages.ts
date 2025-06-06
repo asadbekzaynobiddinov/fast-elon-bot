@@ -17,27 +17,27 @@ export const askHomePicturesMessage = {
 };
 
 export const addressMessage = {
-  uz: 'Qayerda joylashgan?',
-  ru: 'Где это находится?',
-  en: 'Where is it located?',
+  uz: "Qayerda joylashgan?\nTugmalardan birini tanlang yoki qo'lda kiriting:",
+  ru: 'Где это находится?\nВыберите одну из кнопок или введите вручную:',
+  en: 'Where is it located?\nChoose one of the buttons or enter manually:',
 };
 
 export const floorsMessage = {
-  uz: 'Uy joylashgan bino nechta qavatdan iborat?',
-  ru: 'Сколько этажей в здании, где находится дом?',
-  en: 'How many floors does the building where the house is located have?',
+  uz: "Uy joylashgan bino nechta qavatdan iborat?\nTugmalardan birini tanlang yoki qo'lda kiriting:",
+  ru: 'Сколько этажей в здании, где находится дом?\nВыберите одну из кнопок или введите вручную:',
+  en: 'How many floors does the building where the house is located have?\nChoose one of the buttons or enter manually:',
 };
 
 export const floorMessage = {
-  uz: 'Uy qaysi qavatda joylashgan?',
-  ru: 'На каком этаже находится дом?',
-  en: 'Which floor is the house located on?',
+  uz: "Uy qaysi qavatda joylashgan?\nTugmalardan birini tanlang yoki qo'lda kiriting:",
+  ru: 'На каком этаже находится дом?\nВыберите одну из кнопок или введите вручную:',
+  en: 'Which floor is the house located on?\nChoose one of the buttons or enter manually:',
 };
 
 export const roomsMessage = {
-  uz: 'Xonalari nechta?',
-  ru: 'Сколько комнат?',
-  en: 'How many rooms?',
+  uz: "Xonalari nechta?\nTugmalardan birini tanlang yoki qo'lda kiriting:",
+  ru: 'Сколько комнат?\nВыберите одну из кнопок или введите вручную:',
+  en: 'How many rooms?\nChoose one of the buttons or enter manually:',
 };
 
 export const squareMessage = {
@@ -53,9 +53,9 @@ export const priceMessage = {
 };
 
 export const contactInfoMessage = {
-  uz: `Bog'lanish uchun raqam kiriting: `,
-  ru: 'Введите номер для связи: ',
-  en: 'Enter the contact number: ',
+  uz: `Bog'lanish uchun raqam kiriting:\nYoki<b>📞 Telefon raqamni yuborish</b> tugmasini bosing`,
+  ru: 'Введите номер для связи:\nИли нажмите кнопку <b>📞 Отправить номер телефона</b>',
+  en: 'Enter the contact number:\nOr press the <b>📞 Send phone number</b> button',
 };
 
 export const additionalInfo = {

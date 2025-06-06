@@ -20,6 +20,12 @@ import { Home, HomeRepository } from 'src/core';
 import { config } from 'src/config';
 import { Markup } from 'telegraf';
 import { HomeType } from 'src/common/enum';
+import {
+  contactButton,
+  floorMenu,
+  homeAddressMenu,
+  roomsMenu,
+} from 'src/common/constants/user/keyboards/home.keys';
 
 @Scene('homeScene')
 export class HomeScene {
@@ -91,7 +97,32 @@ export class HomeScene {
     homeAdd.pictures = ctx.session.home_photos;
     await this.homeRepo.save(homeAdd);
     ctx.session.home_photos = [];
-    await ctx.reply(addressMessage[ctx.session.lang] as string);
+    await ctx.reply(addressMessage[ctx.session.lang] as string, {
+      reply_markup: homeAddressMenu[ctx.session.lang].reply_markup,
+      parse_mode: 'HTML',
+    });
+  }
+
+  @On('contact')
+  async onContact(@Ctx() ctx: ContextType) {
+    const homeAd = await this.homeRepo.findOne({
+      where: { id: ctx.session.home_id },
+    });
+    if (!homeAd || homeAd.last_state !== 'awaitContactInfo') {
+      return;
+    }
+    homeAd.number_for_contact = (
+      ctx.update as {
+        message: { contact: { phone_number: string } };
+      }
+    ).message.contact.phone_number;
+    homeAd.last_state = 'awaitAdditional';
+    await this.homeRepo.save(homeAd);
+    await ctx.reply(
+      additionalInfo[ctx.session.lang] as string,
+      Markup.removeKeyboard(),
+    );
+    return;
   }
 
   @On('text')
@@ -109,7 +140,7 @@ export class HomeScene {
         homeAdd.location = address;
         homeAdd.last_state = 'awaitFloors';
         await this.homeRepo.save(homeAdd);
-        await ctx.reply(floorsMessage[ctx.session.lang] as string);
+        await ctx.reply(floorsMessage[ctx.session.lang] as string, floorMenu);
         return;
       }
       case 'awaitFloors': {
@@ -127,7 +158,7 @@ export class HomeScene {
         homeAdd.floor_number = floor;
         homeAdd.last_state = 'awaitRooms';
         await this.homeRepo.save(homeAdd);
-        await ctx.reply(roomsMessage[ctx.session.lang] as string);
+        await ctx.reply(roomsMessage[ctx.session.lang] as string, roomsMenu);
         return;
       }
       case 'awaitRooms': {
@@ -136,7 +167,10 @@ export class HomeScene {
         homeAdd.rooms = rooms;
         homeAdd.last_state = 'awaitSquare';
         await this.homeRepo.save(homeAdd);
-        await ctx.reply(squareMessage[ctx.session.lang] as string);
+        await ctx.reply(
+          squareMessage[ctx.session.lang] as string,
+          Markup.removeKeyboard(),
+        );
         return;
       }
       case 'awaitSquare': {
@@ -154,18 +188,31 @@ export class HomeScene {
         homeAdd.price = price;
         homeAdd.last_state = 'awaitContactInfo';
         await this.homeRepo.save(homeAdd);
-        await ctx.reply(contactInfoMessage[ctx.session.lang] as string);
+        await ctx.reply(contactInfoMessage[ctx.session.lang] as string, {
+          reply_markup: {
+            keyboard: [
+              [
+                Markup.button.contactRequest(
+                  contactButton[ctx.session.lang] as string,
+                ),
+              ],
+            ],
+            resize_keyboard: true,
+          },
+          parse_mode: 'HTML',
+        });
+
         return;
       }
-      case 'awaitContactInfo': {
-        const phone = (ctx.update as { message: { text: string } }).message
-          .text;
-        homeAdd.number_for_contact = phone;
-        homeAdd.last_state = 'awaitAdditional';
-        await this.homeRepo.save(homeAdd);
-        await ctx.reply(additionalInfo[ctx.session.lang] as string);
-        return;
-      }
+      // case 'awaitContactInfo': {
+      //   const phone = (ctx.update as { message: { text: string } }).message
+      //     .text;
+      //   homeAdd.number_for_contact = phone;
+      //   homeAdd.last_state = 'awaitAdditional';
+      //   await this.homeRepo.save(homeAdd);
+      //   await ctx.reply(additionalInfo[ctx.session.lang] as string);
+      //   return;
+      // }
       case 'awaitAdditional': {
         const information = (ctx.update as { message: { text: string } })
           .message.text;
