@@ -204,15 +204,18 @@ export class HomeScene {
 
         return;
       }
-      // case 'awaitContactInfo': {
-      //   const phone = (ctx.update as { message: { text: string } }).message
-      //     .text;
-      //   homeAdd.number_for_contact = phone;
-      //   homeAdd.last_state = 'awaitAdditional';
-      //   await this.homeRepo.save(homeAdd);
-      //   await ctx.reply(additionalInfo[ctx.session.lang] as string);
-      //   return;
-      // }
+      case 'awaitContactInfo': {
+        const phone = (ctx.update as { message: { text: string } }).message
+          .text;
+        homeAdd.number_for_contact = phone;
+        homeAdd.last_state = 'awaitAdditional';
+        await this.homeRepo.save(homeAdd);
+        await ctx.reply(
+          additionalInfo[ctx.session.lang] as string,
+          Markup.removeKeyboard(),
+        );
+        return;
+      }
       case 'awaitAdditional': {
         const information = (ctx.update as { message: { text: string } })
           .message.text;
