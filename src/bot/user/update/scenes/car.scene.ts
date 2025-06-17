@@ -21,6 +21,7 @@ import { Car, CarRepository } from 'src/core';
 import { ContextType } from 'src/common/types';
 import { config } from 'src/config';
 import { Markup } from 'telegraf';
+import { contactButton } from 'src/common/constants/user/keyboards/home.keys';
 
 @Scene('carScene')
 export class CarScene {
@@ -177,7 +178,19 @@ export class CarScene {
         carAd.additonal_info = additionInfo;
         carAd.last_state = 'awaitContact';
         await this.carRepo.save(carAd);
-        await ctx.reply(contactInfoMessage[ctx.session.lang] as string);
+        await ctx.reply(contactInfoMessage[ctx.session.lang] as string, {
+          reply_markup: {
+            keyboard: [
+              [
+                Markup.button.contactRequest(
+                  contactButton[ctx.session.lang] as string,
+                ),
+              ],
+            ],
+            resize_keyboard: true,
+          },
+          parse_mode: 'HTML',
+        });
         return;
       }
       case 'awaitContact': {
@@ -260,5 +273,94 @@ export class CarScene {
         return;
       }
     }
+  }
+
+  @On('contact')
+  async onContact(@Ctx() ctx: ContextType) {
+    const carAd = await this.carRepo.findOne({
+      where: { id: ctx.session.car_id },
+    });
+    if (!carAd) {
+      return;
+    }
+    if (carAd.last_state != 'awaitContact') {
+      return;
+    }
+    carAd.contact_number = (
+      ctx.update as {
+        message: { contact: { phone_number: string } };
+      }
+    ).message.contact.phone_number;
+    carAd.last_state = 'done';
+    await this.carRepo.save(carAd);
+
+    await ctx.sendMediaGroup(
+      carAd.pictures.map((pic, index) => ({
+        type: 'photo',
+        media: pic,
+        caption:
+          index === 0
+            ? `<b>🆔 ID:</b> ${carAd.id}\n\n` +
+              `<b>🚗 ${carAd.name}</b>\n\n` +
+              `<b>📍 Probeg:</b> ${carAd.mileage} km\n` +
+              `<b>📅 Yili:</b> ${carAd.year}\n` +
+              `<b>⚙️ Holati:</b> ${carAd.condition}\n` +
+              `<b>🛡️ Kraska:</b> ${carAd.body_condition}\n` +
+              `<b>🎨 Rangi:</b> ${carAd.color}\n` +
+              `<b>📌 Hudud:</b> ${carAd.region}\n` +
+              `<b>💰 Narxi:</b> ${carAd.price}\n` +
+              `<b>📝 Qo'shimcha ma'lumot:</b> ${carAd.additonal_info}\n` +
+              `<b>📞 Kontakt:</b> ${carAd.contact_number}`
+            : undefined,
+        parse_mode: index === 0 ? 'HTML' : undefined,
+      })),
+    );
+
+    await ctx.telegram.sendMediaGroup(
+      config.CAR_ADMIN_CHANEL,
+      carAd.pictures.map((pic, index) => ({
+        type: 'photo',
+        media: pic,
+        caption:
+          index === 0
+            ? `<b>🆔 ID:</b> ${carAd.id}\n\n` +
+              `<b>🚗 ${carAd.name}</b>\n\n` +
+              `<b>📍 Probeg:</b> ${carAd.mileage} km\n` +
+              `<b>📅 Yili:</b> ${carAd.year}\n` +
+              `<b>⚙️ Holati:</b> ${carAd.condition}\n` +
+              `<b>🛡️ Kraska:</b> ${carAd.body_condition}\n` +
+              `<b>🎨 Rangi:</b> ${carAd.color}\n` +
+              `<b>📌 Hudud:</b> ${carAd.region}\n` +
+              `<b>💰 Narxi:</b> ${carAd.price}\n` +
+              `<b>📝 Qo'shimcha ma'lumot:</b> ${carAd.additonal_info}\n` +
+              `<b>📞 Kontakt:</b> ${carAd.contact_number}`
+            : undefined,
+        parse_mode: index === 0 ? 'HTML' : undefined,
+      })),
+    );
+
+    await ctx.telegram.sendMessage(
+      config.CAR_ADMIN_CHANEL,
+      `Yuqoridagi ma'lumotlar bilan mashina e'loni berildi.\nTasdiqlaysizmi?`,
+      Markup.inlineKeyboard([
+        [
+          Markup.button.callback('✅ Tasdiqlash', `acceptCarAd=${carAd.id}`),
+          Markup.button.callback('❌ Rad qilish', `rejectCarAd=${carAd.id}`),
+        ],
+      ]),
+    );
+
+    await ctx.reply(
+      doneMessage[ctx.session.lang] as string,
+      Markup.removeKeyboard(),
+    );
+    ctx.session.lastMessage = await ctx.reply(
+      userMainMessage[ctx.session.lang] as string,
+      {
+        reply_markup: usersMenu[ctx.session.lang],
+      },
+    );
+
+    return;
   }
 }
