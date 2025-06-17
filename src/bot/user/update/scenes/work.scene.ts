@@ -198,7 +198,10 @@ export class WorkScene {
             parse_mode: 'HTML',
           },
         );
-        await ctx.reply(doneMessage[ctx.session.lang] as string);
+        await ctx.reply(
+          doneMessage[ctx.session.lang] as string,
+          Markup.removeKeyboard(),
+        );
         await ctx.reply(userMainMessage[ctx.session.lang] as string, {
           reply_markup: usersMenu[ctx.session.lang],
         });
@@ -235,5 +238,78 @@ export class WorkScene {
         return;
       }
     }
+  }
+
+  @On('contact')
+  async onContact(@Ctx() ctx: ContextType) {
+    const workAd = await this.workRepo.findOne({
+      where: { id: ctx.session.work_id },
+    });
+    if (!workAd) {
+      return;
+    }
+    if (workAd.last_state != 'awaitContact') {
+      return;
+    }
+    workAd.contact = (
+      ctx.update as {
+        message: {
+          contact: {
+            phone_number: string;
+          };
+        };
+      }
+    ).message.contact.phone_number;
+    workAd.last_state = 'done';
+    await this.workRepo.save(workAd);
+    await ctx.reply(
+      `Sizning e'loningiz tayyor!\n\n` +
+        `🆔 <b>Id:</b> ${workAd.id}\n\n` +
+        `${workAd.type === WorkType.WORKJOBEMPLOYER ? '<b>👔 Ish beruvchi: </b>' + workAd.name + '\n' : '<b>🔍 Ish izlovchi: </b>' + workAd.name + '\n'}` +
+        `📍 <b>Manzil:</b> ${workAd.location}\n` +
+        `ℹ️ <b>Ma'lumot:</b> ${workAd.information}\n` +
+        `📝 <b>Izoh:</b> ${workAd.description}\n` +
+        `⏳ <b>Davomiyligi:</b> ${workAd.deadline}\n` +
+        `💰 <b>Maosh:</b> ${workAd.salary}\n` +
+        `🕒 <b>Murojat qilish vaqti:</b> ${workAd.application_time}\n` +
+        `📞 <b>Bog'lanish uchun:</b> ${workAd.contact}\n`,
+      {
+        parse_mode: 'HTML',
+      },
+    );
+    await ctx.reply(
+      doneMessage[ctx.session.lang] as string,
+      Markup.removeKeyboard(),
+    );
+    await ctx.reply(userMainMessage[ctx.session.lang] as string, {
+      reply_markup: usersMenu[ctx.session.lang],
+    });
+    await ctx.telegram.sendMessage(
+      config.WORK_ADMIN_CHANEL,
+      `Yangi e'lon!\n\n` +
+        `🆔 <b>Id:</b> ${workAd.id}\n\n` +
+        `${workAd.type === WorkType.WORKJOBEMPLOYER ? '<b>👔 Ish beruvchi: </b>' + workAd.name + '\n' : '<b>🔍 Ish izlovchi: </b>' + workAd.name + '\n'}` +
+        `📍 <b>Manzil:</b> ${workAd.location}\n` +
+        `ℹ️ <b>Ma'lumot:</b> ${workAd.information}\n` +
+        `📝 <b>Izoh:</b> ${workAd.description}\n` +
+        `⏳ <b>Davomiyligi:</b> ${workAd.deadline}\n` +
+        `💰 <b>Maosh:</b> ${workAd.salary}\n` +
+        `🕒 <b>Murojat qilish vaqti:</b> ${workAd.application_time}\n` +
+        `📞 <b>Bog'lanish uchun:</b> ${workAd.contact}\n`,
+      {
+        parse_mode: 'HTML',
+        reply_markup: {
+          inline_keyboard: [
+            [
+              Markup.button.callback(
+                '✅ Tasdiqlash',
+                `acceptWork=${workAd.id}`,
+              ),
+              Markup.button.callback('❌ Rad etish', `rejectWork=${workAd.id}`),
+            ],
+          ],
+        },
+      },
+    );
   }
 }
