@@ -20,6 +20,7 @@ import {
 import { ContextType } from 'src/common/types';
 import { config } from 'src/config';
 import { Phone, PhoneRepository } from 'src/core';
+import { contactButton } from 'src/common/constants/user/keyboards/home.keys';
 
 @Scene('phoneScene')
 export class PhoneScene {
@@ -89,6 +90,32 @@ export class PhoneScene {
     await this.phoneRepo.save(phoneAd);
     ctx.session.phone_photos = [];
     await ctx.reply(phoneNameMessage[ctx.session.lang] as string);
+  }
+
+  @On('contact')
+  async conContact(@Ctx() ctx: ContextType) {
+    const phoneAd = await this.phoneRepo.findOne({
+      where: {
+        id: ctx.session.phone_id,
+      },
+    });
+    if (!phoneAd) {
+      return;
+    }
+    if (phoneAd.last_state != 'awaitContact') {
+      return;
+    }
+    phoneAd.contact_number = (
+      ctx.update as {
+        message: { contact: { phone_number: string } };
+      }
+    ).message.contact.phone_number;
+    phoneAd.last_state = 'awaitPrice';
+    await this.phoneRepo.save(phoneAd);
+    await ctx.reply(
+      phonePriceMessage[ctx.session.lang] as string,
+      Markup.removeKeyboard(),
+    );
   }
 
   @On('text')
@@ -163,7 +190,19 @@ export class PhoneScene {
         phoneAd.region = region;
         phoneAd.last_state = 'awaitContact';
         await this.phoneRepo.save(phoneAd);
-        await ctx.reply(contactInfoMessage[ctx.session.lang] as string);
+        await ctx.reply(contactInfoMessage[ctx.session.lang] as string, {
+          reply_markup: {
+            keyboard: [
+              [
+                Markup.button.contactRequest(
+                  contactButton[ctx.session.lang] as string,
+                ),
+              ],
+            ],
+            resize_keyboard: true,
+          },
+          parse_mode: 'HTML',
+        });
         break;
       }
       case 'awaitContact': {
@@ -172,7 +211,10 @@ export class PhoneScene {
         phoneAd.contact_number = contact;
         phoneAd.last_state = 'awaitPrice';
         await this.phoneRepo.save(phoneAd);
-        await ctx.reply(phonePriceMessage[ctx.session.lang] as string);
+        await ctx.reply(
+          phonePriceMessage[ctx.session.lang] as string,
+          Markup.removeKeyboard(),
+        );
         break;
       }
       case 'awaitPrice': {
