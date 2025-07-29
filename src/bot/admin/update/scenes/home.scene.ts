@@ -26,7 +26,7 @@ export class AdminHomeScene {
     } catch (error) {
       await ctx.reply('Xato ID kiritildi !');
       await ctx.scene.leave();
-      return;
+      return; 
     }
     if (!homeAdd) {
       await ctx.reply('Bunday uy topilmadi');
