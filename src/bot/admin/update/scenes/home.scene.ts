@@ -25,7 +25,8 @@ export class AdminHomeScene {
     });
     } catch (error) {
       await ctx.reply('Xato ID kiritildi !');
-      return;
+      await ctx.scene.leave();
+      return; 
     }
     if (!homeAdd) {
       await ctx.reply('Bunday uy topilmadi');
