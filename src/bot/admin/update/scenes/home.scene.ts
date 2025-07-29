@@ -18,9 +18,15 @@ export class AdminHomeScene {
   @On('text')
   async onText(@Ctx() ctx: ContextType) {
     const id = (ctx.update as { message: { text: string } }).message.text;
-    const homeAdd = await this.homeRepo.findOne({
+    let homeAdd;
+    try {
+      homeAdd = await this.homeRepo.findOne({
       where: { id },
     });
+    } catch (error) {
+      await ctx.reply('Xatolik');
+      await ctx.scene.leave();
+    }
     if (!homeAdd) {
       await ctx.reply('Bunday uy topilmadi');
       return;
